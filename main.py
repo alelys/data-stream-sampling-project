@@ -16,7 +16,7 @@ metrics_list = [balanced_accuracy_score, recall_score, precision_score]
 
 # choose a sampler, classifier and stream for testingk
 used_classifier = classifiers[0]                                                                  
-used_stream = streams.stream0
+used_stream = streams.stream3
 
 
 # process data and get results
@@ -25,7 +25,7 @@ results = data_processing.process_data(
     metrics=metrics_list,
     stream=used_stream,
     samplers=sampler_list)     
-print(results)
+
 
 # visualize data
 draw(data_array=results,
@@ -33,15 +33,3 @@ draw(data_array=results,
      samplers=sampler_list,
      classifier_name=used_classifier.__class__.__name__,
      stream_name=used_stream.name)        
-
-
-
-
-#The balanced accuracy in binary and multiclass classification problems to deal with imbalanced datasets. It is defined as the average of recall obtained on each class.
-# The best value is 1 and the worst value is 0
-
-# The recall is intuitively the ability of the classifier to find all the positive samples.
-# The best value is 1 and the worst value is 0.
-
-# The precision is intuitively the ability of the classifier not to label as positive a sample that is negative.
-# The best value is 1 and the worst value is 0.
