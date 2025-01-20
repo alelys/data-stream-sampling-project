@@ -1,32 +1,47 @@
 from sklearn.naive_bayes import GaussianNB
-from strlearn.streams import StreamGenerator
-from sklearn.metrics import accuracy_score, recall_score, precision_score
+from sklearn.neural_network import MLPClassifier
+from sklearn.metrics import balanced_accuracy_score, recall_score, precision_score
 from imblearn.over_sampling import RandomOverSampler,  SMOTE
 from imblearn.under_sampling import RandomUnderSampler, ClusterCentroids
-from data_processing import process_data
+import data_processing
 from draw_data import draw
-from save_data import save_data
+import streams
 
 
+# defining classifiers, samplers, metrics and the stream generator
+classifiers = [GaussianNB(), MLPClassifier(max_iter=500)]
+sampler_list = [RandomOverSampler(), SMOTE(), RandomUnderSampler(), ClusterCentroids(), "RandomChoice"]
+metrics_list = [balanced_accuracy_score, recall_score, precision_score]
 
-# defining classifier, samplers, metrics and the stream generator
-classifier = GaussianNB()
-sampler_list = [RandomOverSampler(), SMOTE(), RandomUnderSampler(), ClusterCentroids()]
-metrics = [accuracy_score, recall_score, precision_score]
-stream_gen = StreamGenerator(n_drifts=3,
-                            random_state=2222,
-                            n_chunks=40,
-                            concept_sigmoid_spacing=10,
-                            weights=[0.9, 0.1])        
 
-# choose a sampler to test
-used_sampler = sampler_list[0]                                                                          
+# choose a sampler, classifier and stream for testingk
+used_classifier = classifiers[0]                                                                  
+used_stream = streams.stream0
+
 
 # process data and get results
-results = process_data(clf=classifier, sampler=used_sampler, all_metrics=metrics, stream=stream_gen)   
+results = data_processing.process_data(
+    clf=used_classifier,
+    metrics=metrics_list,
+    stream=used_stream,
+    samplers=sampler_list)     
+print(results)
 
 # visualize data
-draw(data_array=results, all_metrics=metrics, sampler=used_sampler)        
+draw(data_array=results,
+     metrics=metrics_list,
+     samplers=sampler_list,
+     classifier_name=used_classifier.__class__.__name__,
+     stream_name=used_stream.name)        
 
-# save data to file
-save_data(data=results, all_metrics=metrics, sampler=used_sampler)
+
+
+
+#The balanced accuracy in binary and multiclass classification problems to deal with imbalanced datasets. It is defined as the average of recall obtained on each class.
+# The best value is 1 and the worst value is 0
+
+# The recall is intuitively the ability of the classifier to find all the positive samples.
+# The best value is 1 and the worst value is 0.
+
+# The precision is intuitively the ability of the classifier not to label as positive a sample that is negative.
+# The best value is 1 and the worst value is 0.
